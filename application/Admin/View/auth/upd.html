@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="__PUBLIC__/admin/images/icon.png">
+    <link href="/static/admin/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/static/admin/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/admin/css/animate.min.css" rel="stylesheet">
+    <link href="/static/admin/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+</head>
+<body>
+<form action="" method="post">
+{foreach name="user" item="v"}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="form-horizontal m-t">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">权限名称：</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" disabled="disabled" id="auth_name" name="auth_name" style="width: 200px;" value="{$v.auth_name}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">上级：</label>
+            <div class="col-sm-8">
+                <select name="auth_pid">
+                    {foreach name="info" item="vv"}
+
+                    <option name="{$vv.auth_id}" value="{$vv.auth_id}"{eq name="vv.auth_id" value="$v.auth_pid"}selected{/eq} >{$vv.auth_name}</option>
+
+                    {/foreach}
+                </select>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">控制器</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="name" placeholder="" name="auth_c" value="{$v.auth_c}" style="width: 200px;">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">方法</label>
+            <div class="col-sm-8">
+                <input type="text"  class="form-control" name="auth_a" value="{$v.auth_a}" id="" style="width: 200px;">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-2">
+                <button class="btn btn-primary" type="submit" >提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+{/foreach}
+</form>
+<div class="gohome">
+    <a class="animated bounceInUp" href="javascript:location.replace(location.href);" title="刷新"><i class="fa fa-repeat"></i></a>
+    <a class="animated bounceInUp" href="javascript:$('body,html').animate({scrollTop:0},500);" title="TOP">Top</a>
+</div>
+<script src="/static/admin/js/jquery-1.7.2.js"></script>
+<script src="/static/admin/js/layer.js"></script>
+<script src='/static/admin/js/xheditor/xheditor-1.1.14-zh-cn.min.js'></script>
+<script type="text/javascript">
+    $('#bottom').xheditor({skin:'nostyle',width:'100%',height:'200',cleanPaste:3,upBtnText:'上传',html5Upload:false,upImgUrl:'__ROOT__/Rootadmin/MainIndex/add_img_list',upImgExt:'jpg,jpeg,gif,png'});
+    function submit(id){
+        var title = $('#title').val();
+        var name = $('#name').val();
+        var content = $('#content').val();
+        var bottom = $('#bottom').val();
+        var code = $('#code').val();
+        $.post("__URL__/seo",{switch_case:1,id:id,title:title,name:name,content:content,bottom:bottom,code:code},
+            function(data){
+                if(data.fal){
+                    layer.msg(data.content, {icon: 1,time: 2000});
+                }else{
+                    layer.msg(data.content, {icon: 2,time: 2000});
+                }
+            });
+    }
+</script>
+</body>
+</html>

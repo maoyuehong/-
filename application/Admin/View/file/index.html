@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="__PUBLIC__/admin/images/icon.png">
+    <link href="/static/admin/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="/static/admin/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/admin/css/animate.min.css" rel="stylesheet">
+    <link href="/static/admin/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <style type="text/css">
+        .ibox-title{
+            padding: 5px 10px 7px;
+            min-height: 35px;
+            border-bottom: 1px solid #e7eaec;
+        }
+        .ibox-tools a{
+            color: #676a6c;
+        }
+        .img-responsive{
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="col-sm-3 wrapper-content navbar-fixed-top">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="file-manager">
+                <h5>文件夹</h5>
+                <div class="hr-line-dashed"></div>
+                <ul class="folder-list" style="padding: 0">
+                    <li><a href="__URL__/index"><i class="fa fa-folder"></i> 全部文件</a></li>
+                    {foreach name="file_menu" item="vo" key="key"}
+                    <li><a href=""><i class="fa fa-folder"></i> {$vo} {if condition="$key eq $type "}<i class="fa fa-check"></i>{/if}</a></li>                    {/foreach}
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-9 fadeInRight">
+        <div class="col-sm-12">
+
+                <div class="file-box">
+                    <div class="file">
+                        <div class="ibox-title">
+                            <h5><small></small></h5>
+                            <div class="ibox-tools">
+                                <a class="close-link" <if condition="$vo.type eq 'img' "></if>>
+                                <i class="fa fa-edit"></i>修改
+                                </a>
+                                <if condition="!in_array() ">
+                                    <a class="close-link" onclick="dele(this);">
+                                        <i class="fa fa-times"></i>删除
+                                    </a>
+                                </if>
+                            </div>
+                        </div>
+                        <a href="__ROOT__/" target="_blank">
+                            <span class="corner"></span>
+                            <if condition="$vo.type eq 'img' ">
+                                <div class="image">
+                                    <img class="img-responsive" src="__ROOT__/">
+                                </div>
+                                <else/>
+                                <div class="icon">
+                                    <i class="fa fa-file"></i>
+                                </div>
+                            </if>
+                            <div class="file-name">
+                               <br>
+                                <small>修改时间：</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+        </div>
+        <div class="col-sm-12"></div>
+    </div>
+</div>
+<div class="gohome">
+    <a class="animated bounceInUp" href="javascript:location.replace(location.href);" title="刷新"><i class="fa fa-repeat"></i></a>
+    <a class="animated bounceInUp" href="javascript:$('body,html').animate({scrollTop:0},500);" title="TOP">Top</a>
+</div>
+<script src="/static/admin/js/jquery-1.8.2.min.js"></script>
+<script src="/static/admin/layer/layer.js"></script>
+<script src="/static/admin/js/jquery.form.js"></script>
+<script type="text/javascript">
+    var btn = "",info = "",fileType = 'img',fileType_ext = null;
+    function change_edit(obj){
+        var filepath = $(obj).val();
+        var extStart = filepath.lastIndexOf(".");
+        var ext = filepath.substring(extStart,filepath.length).toUpperCase();
+        if(fileType == 'img'){
+            if(ext!=".PNG" && ext!=".GIF" && ext!=".JPG" && ext!=".JPEG"){
+                $("#imgUrl_edit").val('');
+                layer.msg(info, {icon: 2,time: 2000});
+            }else{
+                $("#imgUrl_edit").val(filepath);
+            }
+        }else{
+            if(ext != fileType_ext){
+                $("#imgUrl_edit").val('');
+                layer.msg(info, {icon: 2,time: 2000});
+            }else{
+                $("#imgUrl_edit").val(filepath);
+            }
+        }
+    }
+    function edit(type,file_name,name){
+        fileType = type;
+        if(type == 'img'){
+            btn = "上传图片";
+            info = "上传图片限制jpg、png、gif、jpeg格式，图片大小<2048KB";
+        }else if(type == 'file'){
+            var filepath = name;
+            var extStart = filepath.lastIndexOf(".");
+            var ext = filepath.substring(extStart,filepath.length).toUpperCase();
+            fileType_ext = ext;
+            btn = "上传文件";
+            info = "上传文件限制 "+ext+" 格式，文件大小<2048KB";
+        }
+        layer.confirm(
+            "<form class=\"form-horizontal m-t\" id=\"form\">"+
+            "	<div class=\"form-group\">"+
+            "		<div class=\"col-sm-12\">"+
+            "			<div class=\"input-group m-b\">"+
+            "				<span class=\"input-group-btn\">"+
+            "            		<label for=\"addfile_edit\" class=\"btn btn-primary\">"+
+            "                   	<input type=\"file\" name=\"file_edit\" id=\"addfile_edit\" onchange=\"change_edit(this);\" class=\"hide\"> "+btn+""+
+            "                   </label>"+
+            "            	</span>"+
+            "               <input type=\"text\" id=\"imgUrl_edit\" disabled class=\"form-control\">"+
+            "           </div>"+
+            "			<span class=\"help-block m-b-none\">"+
+            "				<i class=\"fa fa-info-circle\"></i> "+info+""+
+            "			</span>"+
+            "		</div>"+
+            "	</div>"+
+            "</form>"
+            ,{title:'修改：'+name}, function(index) {
+                var file_edit = $("#addfile_edit").val();
+                $("#form").ajaxSubmit({
+                    type: 'post',
+                    url: "__URL__/edit",
+                    data: {
+                        'type': type,
+                        'file_edit': file_edit,
+                        'file_name': file_name,
+                        'name': name,
+                    },
+                    success: function(data) {
+                        if(data.fal){
+                            layer.msg(data.content, {icon: 1,time: 2000},function(){
+                                location.replace(location.href);
+                            });
+                        }else{
+                            layer.msg(data.content, {icon: 2,time: 2000});
+                        }
+                    }
+                });
+            });
+    }
+    /*删除*/
+    function dele(obj,name,file) {
+        layer.confirm('删除须谨慎，确认要删除吗？', {icon : 3,title : '删除：'+name},function(index) {
+            $.post("__URL__/dele", {file:file}, function(data) {
+                if (data.fal) {
+                    $(obj).parents().parents().parents().parents('.file-box').remove();
+                    layer.msg(data.content, {icon : 1,time : 2000});
+                }else{
+                    layer.msg(data.content, {icon : 2,time : 2000});
+                }
+            })
+        });
+    }
+</script>
+</body>
+</html>
